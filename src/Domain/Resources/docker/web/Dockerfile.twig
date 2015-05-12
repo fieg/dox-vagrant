@@ -2,9 +2,6 @@ FROM ubuntu:utopic
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y update
 RUN apt-get -y install nginx
-{#RUN apt-get -y install php5-cli#}
-{#RUN apt-get -y install php5-fpm#}
-{#RUN apt-get -y install php5-mysql#}
 RUN apt-get -y install supervisor
 
 ADD {{ site_config }} /etc/nginx/sites-enabled/site.conf
