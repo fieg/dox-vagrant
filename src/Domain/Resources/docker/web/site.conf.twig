@@ -1,0 +1,38 @@
+server {
+  listen 80;
+
+  server_name {{ server_name|default('localhost') }};
+  root {{ nginx.docroot|default('/mnt/web') }};
+
+  # https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+  add_header X-Frame-Options SAMEORIGIN;
+  add_header X-Content-Type-Options nosniff;
+  add_header X-XSS-Protection "1; mode=block";
+
+  # try to serve file directly, fallback to rewrite
+  location / {
+    {% if nginx.controller %}
+      try_files $uri @rewriteapp;
+    {% else %}
+      try_files $uri $uri/ /index.html;
+    {% endif %}
+  }
+
+  location @rewriteapp {
+    # rewrite all to the controller
+    rewrite ^(.*)$ /{{ nginx.controller }}/$1 last;
+  }
+
+  location ~ ^/{{ nginx.controller|replace({'.': '\\.'}) }}(/|$) {
+    include /etc/nginx/fastcgi_params;
+
+    fastcgi_pass {{ nginx.fastcgi_pass|default('unix:/var/run/php5-fpm.sock') }};
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    fastcgi_param   PATH_INFO           $fastcgi_path_info;
+    fastcgi_param   PATH_TRANSLATED     $document_root$fastcgi_path_info;
+    fastcgi_param   SCRIPT_FILENAME     $document_root$fastcgi_script_name;
+  }
+
+  access_log /dev/stdout;
+  error_log /dev/stdout info;
+}

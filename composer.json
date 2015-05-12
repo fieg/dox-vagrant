@@ -1,0 +1,26 @@
+{
+    "name": "fieg/dox-vagrant",
+    "authors": [
+        {
+            "name": "fieg",
+            "email": "jeroen@fieg.nl"
+        }
+    ],
+    "require": {
+        "symfony/console": "~2.6",
+        "symfony/yaml": "~2.6",
+        "symfony/process": "~2.6",
+        "twig/twig": "~1.18",
+        "symfony/config": "~2.6",
+        "symfony/dependency-injection": "~2.6"
+    },
+    "require-dev": {
+      "phpunit/phpunit": "~4.5",
+      "behat/behat": "~3.0@stable",
+      "behat/mink": "*@stable",
+      "behat/mink-goutte-driver": "*@stable"
+    },
+    "autoload": {
+        "psr-4": {"Fieg\\": "src/", "": "tests/"}
+    }
+}

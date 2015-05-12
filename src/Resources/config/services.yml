@@ -1,0 +1,53 @@
+services:
+  twig_filesystem:
+    class: \Twig_Loader_Filesystem
+    arguments: ['/']
+
+  twig_environment:
+    class: \Twig_Environment
+    arguments: [@twig_filesystem]
+
+  twig:
+    class: Fieg\Twig\Twig
+    arguments: [@twig_environment]
+
+  yaml:
+    class: Symfony\Component\Yaml\Yaml
+
+  doxfile_loader:
+    class: Fieg\Doxfile\YamlDoxfileLoader
+    arguments: [@yaml]
+
+  provisioner:
+    class: Fieg\Domain\Provisioner\DelegatingProvisioner
+
+  provisioner.web:
+    class: Fieg\Domain\Provisioner\WebProvisioner
+    arguments:
+      - '/tmp/docker/web'
+      - @twig
+    tags:
+      - { name: provisioner }
+
+  provisioner.app:
+    class: Fieg\Domain\Provisioner\AppProvisioner
+    arguments:
+      - '/tmp/docker/app'
+      - @twig
+    tags:
+      - { name: provisioner }
+
+  command_bus:
+    class: Fieg\Command\CommandBus
+
+  dependency_solver:
+    class: Fieg\Domain\Component\DependencySolver
+
+  command_handler.up:
+    class: Fieg\Domain\Command\Handler\UpHandler
+    arguments:
+      - @doxfile_loader
+      - @provisioner
+      - @dependency_solver
+    tags:
+      - { name: command_handler }
