@@ -30,7 +30,7 @@ web2: ~
 
 Grouped instances are allowed to communicate with each other.
 
-## Example
+### Example
 
 Here is an example of what I have in mind for a final Doxfile.
 
