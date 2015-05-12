@@ -30,6 +30,43 @@ web2: ~
 
 Grouped instances are allowed to communicate with each other.
 
+## Example
+
+Here is an example of what I have in mind for a final Doxfile.
+
+```yaml
+web1:
+  nginx:
+    webroot: /web
+    controller: app.php
+
+app1:
+  php:
+    version: ~5.5
+    modules:
+      - mysql
+      - curl
+
+fs1:
+  fs:
+    mounts:
+      - /mnt/some_shared_folder
+
+db1:
+  mysql: ~
+
+cache1:
+  redis: ~
+
+queue1:
+  rabbitmq: ~
+
+worker1:
+  supervisor: ~
+  app1:
+    - php app/console consume some_job
+```
+
 # Getting started
 
 1. Install dependencies
